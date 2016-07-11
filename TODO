@@ -1,0 +1,15 @@
+There are many possibilities to improve the TLS Pool GUI, some of them is
+about fixing bugs, others are features e.g.:
+
+- gracefully cancel threads on application exit
+- store user selections
+- finish code documentation using doxygen comments
+- additional documentation
+- add tests
+- verify/port to Windows
+- verify/port to macOS
+- verify/port to FreeBSD
+- use system logging (for real problems?)
+- application settings
+- settings dialog
+- about dialog

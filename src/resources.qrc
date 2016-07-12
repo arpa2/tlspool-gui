@@ -1,0 +1,15 @@
+<!--
+/*!
+ *  \brief     Contains the resources used by the TLS Pool GUI
+ *  \author    Aschwin Marsman
+ *  \date      2016
+ *  \copyright Copyright 2016, Aschwin Marsman, the ARPA2 project
+ *  \license   SPDX-License-Identifier: GPL-2.0
+ */
+-->
+<RCC>
+    <qresource prefix="/">
+        <file alias="icon.png">../images/logo-22x22.png</file>
+        <file alias="icon.svg">../images/logo.svg</file>
+    </qresource>
+</RCC>

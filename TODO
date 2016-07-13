@@ -23,6 +23,8 @@ about fixing bugs, others are (ideas or potential) features:
     - unit tests
     - system tests?
     - regression tests?
+- valgrind
+- cppcheck
 - can we only log the file name excluding the build time path?
 - use system logging (for real problems?)
 - settings dialog

@@ -4,6 +4,8 @@ about fixing bugs, others are (ideas or potential) features:
 - add the menu to pre select an identity to the system tray icon again
 - use status notification messages ("balloon messages")
 - store user selections
+- verify that a system tray exists
+- if there is no system tray available use a minimal application window
 - command line arguments
   - --help
   - --config
@@ -25,10 +27,15 @@ about fixing bugs, others are (ideas or potential) features:
     - regression tests?
 - valgrind
 - cppcheck
+- log additional information
+  - version
+  - git commit id
 - can we only log the file name excluding the build time path?
 - use system logging (for real problems?)
 - settings dialog
 - about dialog
+  - version
+  - git commit id
 - reflect the status in the system tray icon, I would like to see if
   there is a connection with the TLS Pool daemon
 - NixOS: no dependency on everything in Qt5, only on the used parts
@@ -38,4 +45,4 @@ about fixing bugs, others are (ideas or potential) features:
 - verify/port to FreeBSD
 
 Done:
-+ application settings
++ application settings: tlspool-gui.ini

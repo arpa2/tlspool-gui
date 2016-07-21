@@ -1,9 +1,12 @@
 There are many possibilities to improve the TLS Pool GUI, some of them is
 about fixing bugs, others are (ideas or potential) features:
 
+Essential for a first version:
 - add the menu to pre select an identity to the system tray icon again
 - use status notification messages ("balloon messages")
 - store user selections
+
+Other ideas:
 - verify that a system tray exists
 - if there is no system tray available use a minimal application window
 - command line arguments

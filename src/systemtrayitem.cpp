@@ -85,12 +85,12 @@ void SystemTrayItem::showLocalIdentityMenu()
 void SystemTrayItem::showAboutDialog()
 {
     qDebug() << "> SystemTrayItem::aboutDialog()";
-    if (!m_aboutDialog)
-    {
+    if (!m_aboutDialog) {
         m_aboutDialog = new QMessageBox;
         m_aboutDialog->setText("<center><b>TLS Pool GUI</b></center>");
         m_aboutDialog->setInformativeText("<center>version " + g_tlsPoolGuiVersion +
-                         "<br><br>Copyright 2016<br>Aschwin Marsman<br>the ARPA2 project</center>");
+                                          "<br><br>Copyright 2016<br>Aschwin Marsman<br>"
+                                          "the ARPA2 project</center>");
         m_aboutDialog->setDetailedText("SPDX-License-Identifier: GPL-2.0");
         // the about dialog shouldn't prevent using another dialog that pops up
         m_aboutDialog->setModal(false);

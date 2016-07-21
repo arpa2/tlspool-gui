@@ -61,3 +61,11 @@ add_executable(${APP_NAME} ${SOURCES} src/resources.qrc)
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(${APP_NAME} Qt5::Widgets Qt5::Svg tlspool)
+
+add_custom_target(
+    GenerateHeaderFile
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generatefiles.sh ${CMAKE_CURRENT_SOURCE_DIR}/src/tlspoolgenerated.h
+#    COMMAND /home/aschwin/projects/arpa2/amarsman/tlspool/2016-07-14-tlspool-environment/tlspool-gui/scripts/generateversion.sh /home/aschwin/projects/arpa2/amarsman/tlspool/2016-07-14-tlspool-environment/tlspool-gui/src/tlspoolversion.h
+)
+add_dependencies(${APP_NAME} GenerateHeaderFile)
+

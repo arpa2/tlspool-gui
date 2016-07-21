@@ -11,44 +11,36 @@
 #include <QCoreApplication>
 #include <QMenu>
 
+#include "tlspoolgenerated.h"
 #include "systemtrayitem.h"
 
 SystemTrayItem::SystemTrayItem(QObject *a_parent)
     : QObject(a_parent)
+    , m_aboutDialog(nullptr)
 {
     qDebug() << "> SystemTrayItem::SystemTrayItem()";
     Q_INIT_RESOURCE(resources);
 
     QMenu *systemTrayIconMenu;
-//    QAction *minimizeAction;
-//    QAction *maximizeAction;
-//    QAction *restoreAction;
+    QAction *aboutAction;
     QAction *quitAction;
 
     m_systemTrayIcon = new QSystemTrayIcon(a_parent);
     systemTrayIconMenu = new QMenu();
-//    minimizeAction = new QAction(tr("Mi&nimize"), a_parent);
-//    connect(minimizeAction, &QAction::triggered, a_parent, &QWidget::hide);
 
-//    maximizeAction = new QAction(tr("Ma&ximize"), a_widget);
-//    connect(maximizeAction, &QAction::triggered, a_widget, &QWidget::showMaximized);
-
-//    restoreAction = new QAction(tr("&Restore"), a_widget);
-//    connect(restoreAction, &QAction::triggered, a_widget, &QWidget::showNormal);
+    aboutAction = new QAction(tr("&About"), a_parent);
+    connect(aboutAction, &QAction::triggered, this, &SystemTrayItem::showAboutDialog);
 
     quitAction = new QAction(tr("&Quit"), a_parent);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 
-//    systemTrayIconMenu->addAction(minimizeAction);
-//    systemTrayIconMenu->addAction(maximizeAction);
-//    systemTrayIconMenu->addAction(restoreAction);
     systemTrayIconMenu->addSeparator();
+    systemTrayIconMenu->addAction(aboutAction);
     systemTrayIconMenu->addAction(quitAction);
 
     m_systemTrayIcon->setContextMenu(systemTrayIconMenu);
     // \todo use svg icon
     m_systemTrayIcon->setIcon(QIcon(":/icon.png"));
-//    m_systemTrayIcon->setIcon(QIcon(":/icon.svg"));
 
     connect(m_systemTrayIcon, &QSystemTrayIcon::activated, this, &SystemTrayItem::iconActivated);
     qDebug() << "< SystemTrayItem::SystemTrayItem()";
@@ -57,6 +49,7 @@ SystemTrayItem::SystemTrayItem(QObject *a_parent)
 SystemTrayItem::~SystemTrayItem()
 {
     qDebug() << "> SystemTrayItem::~SystemTrayItem()";
+    delete m_aboutDialog;
     qDebug() << "< SystemTrayItem::~SystemTrayItem()";
 }
 
@@ -87,4 +80,21 @@ void SystemTrayItem::showLocalIdentityMenu()
 {
     qDebug() << "> SystemTrayItem::showLocalIdentityMenu()";
     qDebug() << "< SystemTrayItem::showLocalIdentityMenu()";
+}
+
+void SystemTrayItem::showAboutDialog()
+{
+    qDebug() << "> SystemTrayItem::aboutDialog()";
+    if (!m_aboutDialog)
+    {
+        m_aboutDialog = new QMessageBox;
+        m_aboutDialog->setText("<center><b>TLS Pool GUI</b></center>");
+        m_aboutDialog->setInformativeText("<center>version " + g_tlsPoolGuiVersion +
+                         "<br><br>Copyright 2016<br>Aschwin Marsman<br>the ARPA2 project</center>");
+        m_aboutDialog->setDetailedText("SPDX-License-Identifier: GPL-2.0");
+        // the about dialog shouldn't prevent using another dialog that pops up
+        m_aboutDialog->setModal(false);
+    }
+    m_aboutDialog->show();
+    qDebug() << "< SystemTrayItem::aboutDialog()";
 }

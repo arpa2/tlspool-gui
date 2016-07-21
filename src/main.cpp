@@ -10,6 +10,7 @@
 #include <QDebug>
 
 #include <tlspool/starttls.h>
+#include "tlspoolgenerated.h"
 #include "tlspoolinterface.h"
 
 int main(int argc, char *argv[])
@@ -25,6 +26,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("ARPA2 Project");
     QCoreApplication::setOrganizationDomain("arpa2.net");
     QCoreApplication::setApplicationName("TLS Pool GUI");
+
+    qDebug() << "TLS Pool GUI version:" << g_tlsPoolGuiVersion;
 
     TlsPoolInterface tlsPoolInterface;
 

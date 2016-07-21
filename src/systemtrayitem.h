@@ -9,8 +9,8 @@
 #ifndef SYSTEMTRAYITEM_H
 #define SYSTEMTRAYITEM_H
 
+#include <QMessageBox>
 #include <QSystemTrayIcon>
-#include <QObject>
 
 class SystemTrayItem : public QObject
 {
@@ -26,9 +26,11 @@ public:
 
 private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason a_reason);
+    void showAboutDialog();
 
 private:
     QSystemTrayIcon *m_systemTrayIcon;
+    QMessageBox     *m_aboutDialog;
 };
 
 #endif // SYSTEMTRAYITEM_H

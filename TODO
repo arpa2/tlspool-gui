@@ -27,15 +27,10 @@ about fixing bugs, others are (ideas or potential) features:
     - regression tests?
 - valgrind
 - cppcheck
-- log additional information
-  - version
-  - git commit id
 - can we only log the file name excluding the build time path?
 - use system logging (for real problems?)
 - settings dialog
-- about dialog
-  - version
-  - git commit id
+- handle the fact that there is no .git directory for the version info
 - reflect the status in the system tray icon, I would like to see if
   there is a connection with the TLS Pool daemon
 - NixOS: no dependency on everything in Qt5, only on the used parts
@@ -46,3 +41,9 @@ about fixing bugs, others are (ideas or potential) features:
 
 Done:
 + application settings: tlspool-gui.ini
++ log additional information
+  + version
+  + git commit id
++ about dialog
+  + version
+  + git commit id

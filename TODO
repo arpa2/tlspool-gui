@@ -2,26 +2,27 @@ There are many possibilities to improve the TLS Pool GUI, some of them is
 about fixing bugs, others are (ideas or potential) features:
 
 Essential for a first version:
+- command line arguments
+  - --help
+  - --config : specifiy the location of tlspool-gui.ini
 - add the menu to pre select an identity to the system tray icon again
 - use status notification messages ("balloon messages")
 - store user selections
+- additional documentation
+  - manual page
+  - INSTALL
+- improve existing documentation
 
 Other ideas:
 - verify that a system tray exists
 - if there is no system tray available use a minimal application window
-- command line arguments
-  - --help
-  - --config
 - order of startup of the tlspool and tlspool-gui shouldn't matter
 - reconnect properly to the tlspool
 - gracefully cancel threads on application exit
 - finish code documentation using doxygen comments
 - additional documentation
-  - README
-  - INSTALL
   - notes
   - end user docs
-  - manual page
 - add tests:
   - describe how you can test certain functionality (manually)
   - automate tests:
@@ -37,6 +38,7 @@ Other ideas:
 - reflect the status in the system tray icon, I would like to see if
   there is a connection with the TLS Pool daemon
 - NixOS: no dependency on everything in Qt5, only on the used parts
+- discuss if the tlspool library can provide an async api
 - verify/port to Windows
 - verify/port to Windows using MXE
 - verify/port to macOS

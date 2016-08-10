@@ -20,7 +20,7 @@ SET(CMAKE_BUILD_TYPE Debug)
 if (APPLE)
 	set(COMPILE_FLAGS "-Weverything -Wno-padded")
 else()
-        set(COMPILE_FLAGS "-Wall -Wextra -std=c++11 -Wshadow -DDEBUG")
+        set(COMPILE_FLAGS "-Wall -Wextra -std=c++11 -Wshadow -Wold-style-cast -Wfloat-equal -Woverloaded-virtual -Wundef -DDEBUG")
 endif ()
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS} -g")
 

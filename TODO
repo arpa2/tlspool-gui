@@ -2,12 +2,16 @@ There are many possibilities to improve the TLS Pool GUI, some of them is
 about fixing bugs, others are (ideas or potential) features:
 
 Essential for a first version:
+- use tlspool_configvar to retrieve the socket name
+- select local identity dialog: default focus should be on "local identity to reveal"
+- select local identity dialog: "local identity to reveal" should be editable
+- select local identity dialog: "remember my choice" should be implemented
+- select local identity dialog: "remote pear to disclose to" should use maxlevels to show different possibilities
 - command line arguments
   - --help
   - --config : specifiy the location of tlspool-gui.ini
 - add the menu to pre select an identity to the system tray icon again
 - use status notification messages ("balloon messages")
-- store user selections
 - additional documentation
   - manual page
   - INSTALL

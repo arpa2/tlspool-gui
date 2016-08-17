@@ -26,7 +26,7 @@ public:
     void setRemoteIdentity(const QString &a_remoteId);
 
 signals:
-    void localIdentitySelected(const QString &a_localIdentity);
+    void localIdentitySelected(const QString &a_localIdentity, bool a_remember);
     void localIdentityRejected();
 
 protected slots:

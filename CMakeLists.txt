@@ -22,7 +22,7 @@ if (APPLE)
 else()
         set(COMPILE_FLAGS "-Wall -Wextra -std=c++11 -Wshadow -Wold-style-cast -Wfloat-equal -Woverloaded-virtual -Wundef -DDEBUG")
 endif ()
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS} -g")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
 
 #set(CMAKE_CXX_STANDARD 14)
 

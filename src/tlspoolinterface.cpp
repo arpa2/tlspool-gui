@@ -25,12 +25,17 @@ TlsPoolInterface::TlsPoolInterface(QObject *a_parent)
 {
     qDebug() << "> TlsPoolInterface::TlsPoolInterface()";
 
-    m_settings = new QSettings("tlspool-gui.ini", QSettings::IniFormat);
+    m_settings = new TlsPoolGuiSettings("tlspool-gui.ini", this);
 
-    if (!m_settings->contains("tlspool/socketname")) {
-        m_settings->setValue("tlspool/socketname", TLSPOOL_DEFAULT_SOCKET_PATH);
-    }
     m_systemTrayItem = new SystemTrayItem(a_parent);
+    connect(this, &TlsPoolInterface::localIdentityListUpdated,
+            m_systemTrayItem, &SystemTrayItem::onLocalIdentityListUpdated);
+    connect(m_systemTrayItem, &SystemTrayItem::defaultLocalIdentity,
+            this, &TlsPoolInterface::onDefaultLocalIdentity);
+    connect(m_systemTrayItem, &SystemTrayItem::deleteDefaultLocalIdentity,
+            this, &TlsPoolInterface::onDeleteDefaultLocalIdentity);
+    connect(this, &TlsPoolInterface::defaultLocalIdentitySelected,
+            m_systemTrayItem, &SystemTrayItem::onDefaultLocalIdentitySelected);
 
     startPinEntryThread();
     startLocalIdSelectionThread();
@@ -62,7 +67,7 @@ void TlsPoolInterface::startPinEntryThread()
     connect(this, &TlsPoolInterface::pinEntered, pinEntryThread, &PinEntryThread::onPinEntered);
     connect(this, &TlsPoolInterface::pinRejected, pinEntryThread, &PinEntryThread::onPinRejected);
 
-    pinEntryThread->setSocketName(m_settings->value("tlspool/socketname").toString());
+    pinEntryThread->setSocketName(m_settings->socketName());
     pinEntryThread->start();
     qDebug() << "< TlsPoolInterface::startPinEntryThread()";
 }
@@ -85,7 +90,7 @@ void TlsPoolInterface::startLocalIdSelectionThread()
     connect(this, &TlsPoolInterface::localIdentityRejected, localIdSelectionThread,
             &LocalIdSelectionThread::onLocalIdentityRejected);
 
-    localIdSelectionThread->setSocketName(m_settings->value("tlspool/socketname").toString());
+    localIdSelectionThread->setSocketName(m_settings->socketName());
     localIdSelectionThread->start();
     qDebug() << "< TlsPoolInterface::startLocalIdSelectionThread()";
 }
@@ -160,6 +165,7 @@ void TlsPoolInterface::onNewEntry(const QString &a_newEntry)
     qDebug() << "> TlsPoolInterface::newEntry(" << a_newEntry << ")";
     if (!m_localIdentityList.contains(a_newEntry)) {
         m_localIdentityList.append(a_newEntry);
+        emit localIdentityListUpdated(m_localIdentityList);
     }
     qDebug() << "< TlsPoolInterface::newEntry()";
 }
@@ -169,19 +175,23 @@ void TlsPoolInterface::onRemoteId(const QString &a_remoteId)
     qDebug() << "> TlsPoolInterface::remoteId(" << a_remoteId << ")";
     m_remoteId = a_remoteId;
 
-    delete m_selectLocalIdentityDialog;
-    m_selectLocalIdentityDialog = new SelectLocalIdentityDialog;
+    if (!m_defaultLocalIdentity.isEmpty()) {
+        // There is already a local identity selected, don't show the dialog
+        emit localIdentitySelected(m_defaultLocalIdentity, false);
+    } else {
+        delete m_selectLocalIdentityDialog;
+        m_selectLocalIdentityDialog = new SelectLocalIdentityDialog;
 
-    m_selectLocalIdentityDialog->setLocalIdentityList(m_localIdentityList);
-    m_selectLocalIdentityDialog->setRemoteIdentity(m_remoteId);
+        m_selectLocalIdentityDialog->setLocalIdentityList(m_localIdentityList);
+        m_selectLocalIdentityDialog->setRemoteIdentity(m_remoteId);
 
-    connect(m_selectLocalIdentityDialog, &QDialog::rejected, this,
-            &TlsPoolInterface::onLocalIdentityRejected);
-    connect(m_selectLocalIdentityDialog, &SelectLocalIdentityDialog::localIdentitySelected, this,
-            &TlsPoolInterface::onLocalIdentitySelected);
+        connect(m_selectLocalIdentityDialog, &QDialog::rejected, this,
+                &TlsPoolInterface::onLocalIdentityRejected);
+        connect(m_selectLocalIdentityDialog, &SelectLocalIdentityDialog::localIdentitySelected, this,
+                &TlsPoolInterface::onLocalIdentitySelected);
 
-    m_selectLocalIdentityDialog->show();
-
+        m_selectLocalIdentityDialog->show();
+    }
     qDebug() << "< TlsPoolInterface::remoteId()";
 }
 
@@ -192,11 +202,11 @@ void TlsPoolInterface::onLocalIdentityRejected()
     qDebug() << "< TlsPoolInterface::onLocalIdentityRejected()";
 }
 
-void TlsPoolInterface::onLocalIdentitySelected(const QString &a_localIdentity)
+void TlsPoolInterface::onLocalIdentitySelected(const QString &a_localIdentity, bool a_remember)
 {
     qDebug() << "> TlsPoolInterface::onLocalIdentitySelected(" <<
-             a_localIdentity << ")";
-    emit localIdentitySelected(a_localIdentity);
+             a_localIdentity << a_remember << ")";
+    emit localIdentitySelected(a_localIdentity, a_remember);
     qDebug() << "< TlsPoolInterface::onLocalIdentitySelected()";
 }
 
@@ -207,4 +217,20 @@ void TlsPoolInterface::onTlsPoolLocalIdSelectionTermindated()
     m_selectLocalIdentityDialog = nullptr;
     QTimer::singleShot(RESTART_THREAD_TIME, this, &TlsPoolInterface::startLocalIdSelectionThread);
     qDebug() << "< TlsPoolInterface::tlsPoolLocalIdSelectionTermindated()";
+}
+
+void TlsPoolInterface::onDefaultLocalIdentity(const QString &a_identity)
+{
+    qDebug() << "> TlsPoolInterface::onDefaultLocalIdentity(" << a_identity << ")";
+    m_defaultLocalIdentity = a_identity;
+    emit defaultLocalIdentitySelected(m_defaultLocalIdentity);
+    qDebug() << "< TlsPoolInterface::onDefaultLocalIdentity()";
+}
+
+void TlsPoolInterface::onDeleteDefaultLocalIdentity()
+{
+    qDebug() << "> TlsPoolInterface::onDeleteDefaultLocalIdentity()";
+    m_defaultLocalIdentity.clear();
+    emit defaultLocalIdentitySelected("");
+    qDebug() << "< TlsPoolInterface::onDeleteDefaultLocalIdentity(): default local identity deleted";
 }

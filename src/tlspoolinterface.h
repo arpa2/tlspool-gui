@@ -16,6 +16,7 @@
 #include "pinentrydialog.h"
 #include "selectlocalidentitydialog.h"
 #include "systemtrayitem.h"
+#include "tlspoolguisettings.h"
 
 class TlsPoolInterface : public QObject
 {
@@ -31,8 +32,10 @@ signals:
     void pinEntered(const QString &a_pin);
     void pinRejected();
 
-    void localIdentitySelected(const QString &a_localIdentity);
+    void localIdentityListUpdated(const QStringList &a_localIdentityList);
+    void localIdentitySelected(const QString &a_localIdentity, bool a_remember);
     void localIdentityRejected();
+    void defaultLocalIdentitySelected(const QString &a_identity);
 
 protected slots:
     void onPinRequested(const QString &a_prompt, ulong a_maxPinLength,
@@ -48,8 +51,11 @@ protected slots:
     void onNewEntry(const QString &a_newEntry);
     void onRemoteId(const QString &a_remoteId);
     void onLocalIdentityRejected();
-    void onLocalIdentitySelected(const QString &a_localIdentity);
+    void onLocalIdentitySelected(const QString &a_localIdentity, bool a_remember);
     void onTlsPoolLocalIdSelectionTermindated();
+
+    void onDefaultLocalIdentity(const QString &a_identity);
+    void onDeleteDefaultLocalIdentity();
 
 private:
     void startPinEntryThread();
@@ -58,9 +64,10 @@ private:
     SystemTrayItem            *m_systemTrayItem;
     PinEntryDialog            *m_pinEntryDialog;
     SelectLocalIdentityDialog *m_selectLocalIdentityDialog;
-    QSettings                 *m_settings;
+    TlsPoolGuiSettings        *m_settings;
     QStringList                m_localIdentityList;
     QString                    m_remoteId;
+    QString                    m_defaultLocalIdentity;
 };
 
 #endif // TLSPOOLINTERFACE_H

@@ -80,8 +80,8 @@ void PinEntryThread::run()
 
     // Service the TLS Pool
     errno = 0;
-    int ret = tlspool_pin_service (m_socketName.toLatin1().data(), regflags,
-                                   responsetime_usec, pinServiceCallback, this);
+    int ret = tlspool_pin_service(m_socketName.toLatin1().data(), regflags,
+                                  responsetime_usec, pinServiceCallback, this);
     if (ret == -1) {
         qWarning() << "  PinEntryThread::run::tlspool_pin_service: terminated, errno" <<
                    std::strerror(errno);

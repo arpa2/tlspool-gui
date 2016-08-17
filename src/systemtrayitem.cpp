@@ -9,14 +9,17 @@
 #include <QDebug>
 #include <QAction>
 #include <QCoreApplication>
-#include <QMenu>
 
 #include "tlspoolgenerated.h"
 #include "systemtrayitem.h"
 
+static const int LOCAL_IDENTITY_MENU_TITLE = -1;
+static const int LOCAL_IDENTITY_MENU_RESET = -2;
+
 SystemTrayItem::SystemTrayItem(QObject *a_parent)
     : QObject(a_parent)
     , m_aboutDialog(nullptr)
+    , m_localIdentityMenu(nullptr)
 {
     qDebug() << "> SystemTrayItem::SystemTrayItem()";
     Q_INIT_RESOURCE(resources);
@@ -50,6 +53,7 @@ SystemTrayItem::~SystemTrayItem()
 {
     qDebug() << "> SystemTrayItem::~SystemTrayItem()";
     delete m_aboutDialog;
+    delete m_localIdentityMenu;
     qDebug() << "< SystemTrayItem::~SystemTrayItem()";
 }
 
@@ -62,7 +66,7 @@ void SystemTrayItem::show()
 
 void SystemTrayItem::iconActivated(QSystemTrayIcon::ActivationReason a_reason)
 {
-    qDebug() << "> SystemTrayItem::iconActivated()";
+    qDebug() << "> SystemTrayItem::iconActivated(" << a_reason << ")";
     switch (a_reason) {
     case QSystemTrayIcon::Trigger:
     case QSystemTrayIcon::DoubleClick:
@@ -79,6 +83,43 @@ void SystemTrayItem::iconActivated(QSystemTrayIcon::ActivationReason a_reason)
 void SystemTrayItem::showLocalIdentityMenu()
 {
     qDebug() << "> SystemTrayItem::showLocalIdentityMenu()";
+    QAction *localIdentityAction;
+
+    m_localIdentityMenu = new QMenu();
+    connect(m_localIdentityMenu, &QMenu::triggered, this, &SystemTrayItem::localIdentityTriggered);
+    QAction *titleAction = new QAction(tr("Current Identity"), m_localIdentityMenu);
+    titleAction->setData(QVariant(LOCAL_IDENTITY_MENU_TITLE));
+    titleAction->setEnabled(false);
+    m_localIdentityMenu->addAction(titleAction);
+    m_localIdentityMenu->addSeparator();
+
+    qDebug() << "m_defaultLocalIdentity:" << m_defaultLocalIdentity;
+    for (int i = 0; i < m_localIdentityList.size(); ++i) {
+        localIdentityAction = new QAction(m_localIdentityList.at(i), m_localIdentityMenu);
+        localIdentityAction->setData(i);
+        qDebug() << i << m_localIdentityList.at(i);
+        if (m_defaultLocalIdentity == m_localIdentityList.at(i)) {
+            localIdentityAction->setCheckable(true);
+            localIdentityAction->setChecked(true);
+            qDebug() << i << "setChecked(true)";
+        }
+        m_localIdentityMenu->addAction(localIdentityAction);
+    }
+
+    m_localIdentityMenu->addSeparator();
+
+    QAction *resetAction = new QAction(tr("No default identity"), m_localIdentityMenu);
+    resetAction->setData(QVariant(LOCAL_IDENTITY_MENU_RESET));
+    m_localIdentityMenu->addAction(resetAction);
+
+    // \todo in qdbustrayicon_p.h the geometry function is implemented as:
+    //       QRect geometry() const Q_DECL_OVERRIDE { return QRect(); }
+    //       so it never contains a correct position :-(
+    //       Need to find another way to find the icon position so the local identity menu can be
+    //       shown at the correct location
+    //    m_localIdentityMenu->exec(m_systemTrayIcon->geometry().center());
+    qDebug() << m_systemTrayIcon->geometry();
+    m_localIdentityMenu->exec(QPoint(1000, 600));
     qDebug() << "< SystemTrayItem::showLocalIdentityMenu()";
 }
 
@@ -97,4 +138,42 @@ void SystemTrayItem::showAboutDialog()
     }
     m_aboutDialog->show();
     qDebug() << "< SystemTrayItem::aboutDialog()";
+}
+
+void SystemTrayItem::onLocalIdentityListUpdated(const QStringList &a_localIdentityList)
+{
+    qDebug() << "> SystemTrayItem::onLocalIdentityListUpdated(" << a_localIdentityList << ")";
+    m_localIdentityList = a_localIdentityList;
+    qDebug() << "< SystemTrayItem::onLocalIdentityListUpdated()";
+}
+
+void SystemTrayItem::localIdentityTriggered(QAction *a_action)
+{
+    qDebug() << "> SystemTrayItem::localIdentityTriggered(" << a_action->text() << ")";
+    switch (a_action->data().toInt()) {
+    case LOCAL_IDENTITY_MENU_TITLE:
+        break;
+    case LOCAL_IDENTITY_MENU_RESET:
+        emit deleteDefaultLocalIdentity();
+        break;
+    default:
+        emit defaultLocalIdentity(m_localIdentityList.at(a_action->data().toInt()));
+        break;
+    }
+
+    qDebug() << "< SystemTrayItem::localIdentityTriggered()";
+}
+
+void SystemTrayItem::onDefaultLocalIdentitySelected(const QString &a_identity)
+{
+    qDebug() << "> SystemTrayItem::onDefaultLocalIdentitySelected(" << a_identity << ")";
+    m_defaultLocalIdentity = a_identity;
+    qDebug() << "< SystemTrayItem::onDefaultLocalIdentitySelected()";
+}
+
+bool SystemTrayItem::event(QEvent *a_event)
+{
+    qDebug() << "> SystemTrayItem::event(" << a_event << ")";
+    return QObject::event(a_event);
+    qDebug() << "< SystemTrayItem::event()";
 }

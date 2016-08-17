@@ -9,6 +9,7 @@
 #ifndef SYSTEMTRAYITEM_H
 #define SYSTEMTRAYITEM_H
 
+#include <QMenu>
 #include <QMessageBox>
 #include <QSystemTrayIcon>
 
@@ -24,13 +25,28 @@ public:
 
     void showLocalIdentityMenu();
 
+signals:
+    void defaultLocalIdentity(const QString &a_identity);
+    void deleteDefaultLocalIdentity();
+
+public slots:
+    void onLocalIdentityListUpdated(const QStringList &a_localIdentityList);
+    void onDefaultLocalIdentitySelected(const QString &a_identity);
+
 private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason a_reason);
     void showAboutDialog();
+    void localIdentityTriggered(QAction *a_action);
+
+protected:
+    bool event(QEvent *e);
 
 private:
     QSystemTrayIcon *m_systemTrayIcon;
     QMessageBox     *m_aboutDialog;
+    QStringList      m_localIdentityList;
+    QMenu           *m_localIdentityMenu;
+    QString          m_defaultLocalIdentity;
 };
 
 #endif // SYSTEMTRAYITEM_H

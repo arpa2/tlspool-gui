@@ -30,11 +30,12 @@ signals:
     void tlsPoolLocalIdSelectionTermindated();
 
 public slots:
-    void onLocalIdentitySelected(const QString &a_localIdentitySelected);
+    void onLocalIdentitySelected(const QString &a_localIdentitySelected, bool a_remember);
     void onLocalIdentityRejected();
 
 public:
     QString m_localId;
+    bool    m_remember;
     QString m_socketName;
 };
 

@@ -21,6 +21,7 @@ static QMutex s_localIdMutex;
 
 LocalIdSelectionThread::LocalIdSelectionThread(QObject *a_parent)
     : QThread(a_parent)
+    , m_remember(false)
 {
     qDebug() << "> LocalIdSelectionThread::LocalIdSelectionThread()";
     qDebug() << "< LocalIdSelectionThread::LocalIdSelectionThread()";
@@ -64,7 +65,12 @@ static char *localIdSelectionCallback (lidentry_t *a_entry, void *a_data)
     s_localIdMutex.lock();
     s_localSelected.wait(&s_localIdMutex);
     QString localId = localIdSelectionThreadPtr->m_localId;
+    if (localIdSelectionThreadPtr->m_remember) {
+        a_entry->flags |= PIOF_LIDENTRY_DBAPPEND;
+        qDebug() << "a_entry->flags PIOF_LIDENTRY_DBAPPEND added:" << a_entry->flags;
+    }
     localIdSelectionThreadPtr->m_localId.clear();
+    localIdSelectionThreadPtr->m_remember = false;
     s_localIdMutex.unlock();
 
     if ((localId.length() + 1) > static_cast<int>(sizeof (a_entry->localid))) {
@@ -102,19 +108,20 @@ void LocalIdSelectionThread::run()
 //        localIdSelectionCallback(&lidentry, this);
 //        strcpy(lidentry.localid, "mies");
 //        localIdSelectionCallback(&lidentry, this);
-//        strcpy(lidentry.remoteid, "juf");
 //        lidentry.flags = 0;
 //        localIdSelectionCallback(&lidentry, this);
     }
     qDebug() << "< LocalIdSelectionThread::run()";
 }
 
-void LocalIdSelectionThread::onLocalIdentitySelected(const QString &a_localIdentitySelected)
+void LocalIdSelectionThread::onLocalIdentitySelected(const QString &a_localIdentitySelected,
+                                                     bool a_remember)
 {
     qDebug() << "< LocalIdSelectionThread::onLocalIdentitySelected(" << a_localIdentitySelected <<
-             ")";
+             a_remember << ")";
     s_localIdMutex.lock();
     m_localId = a_localIdentitySelected;
+    m_remember = a_remember;
     s_localSelected.wakeAll();
     s_localIdMutex.unlock();
     qDebug() << "< LocalIdSelectionThread::onLocalIdentitySelected()";
@@ -125,6 +132,7 @@ void LocalIdSelectionThread::onLocalIdentityRejected()
     qDebug() << "< LocalIdSelectionThread::onLocalIdentityRejected()";
     s_localIdMutex.lock();
     m_localId.clear();
+    m_remember = false;
     s_localSelected.wakeAll();
     s_localIdMutex.unlock();
     qDebug() << "< LocalIdSelectionThread::onLocalIdentityRejected()";

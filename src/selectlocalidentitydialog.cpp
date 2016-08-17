@@ -32,9 +32,9 @@ SelectLocalIdentityDialog::SelectLocalIdentityDialog(QWidget *a_parent)
 
     m_localIdentityComboBox = new QComboBox;
 
-    m_localIdentityComboBox->setEditable(false);
+    m_localIdentityComboBox->setEditable(true);
 
-//    m_rememberChoiceCheckBox = new QCheckBox(tr("&Remember my choice"));;
+    m_rememberChoiceCheckBox = new QCheckBox(tr("&Remember my choice"));;
 
     QVBoxLayout *verticalLayout = new QVBoxLayout;
 
@@ -48,7 +48,7 @@ SelectLocalIdentityDialog::SelectLocalIdentityDialog(QWidget *a_parent)
     verticalLayout->addWidget(m_remotePeerComboBox);
     verticalLayout->addWidget(localIdentityLabel);
     verticalLayout->addWidget(m_localIdentityComboBox);
-//    verticalLayout->addWidget(m_rememberChoiceCheckBox);
+    verticalLayout->addWidget(m_rememberChoiceCheckBox);
     verticalLayout->addWidget(buttonBox);
     setLayout(verticalLayout);
     qDebug() << "< SelectLocalIdentityDialog::SelectLocalIdentityDialog()";
@@ -83,7 +83,8 @@ void SelectLocalIdentityDialog::setRemoteIdentity(const QString &a_remoteId)
 void SelectLocalIdentityDialog::onAccepted()
 {
     qDebug() << "> SelectLocalIdentityDialog::onAccepted()";
-    emit localIdentitySelected(m_localIdentityComboBox->currentText());
+    emit localIdentitySelected(m_localIdentityComboBox->currentText(),
+                               m_rememberChoiceCheckBox->isChecked());
     accept();
     qDebug() << "> SelectLocalIdentityDialog::~onAccepted()";
 }

@@ -21,9 +21,8 @@ $ bash <(curl https://nixos.org/nix/install)
 
 When Nix is installed do the following:
 
-$ git clone https://github.com/amarsman/tlspool.git
-$ cd tlspool
-$ git checkout tlspool-gui
+$ wget https://raw.githubusercontent.com/amarsman/tlspool/tlspool-gui/QUICKSTART.sh
+$ chmod 755 QUICKSTART.sh
 $ ./QUICKSTART.sh 
 
 This will build tlspool and tlspool-gui. As it needs qt5 the build can take 

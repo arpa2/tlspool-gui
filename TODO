@@ -10,7 +10,6 @@ Essential for a first version:
 - use status notification messages ("balloon messages")
 - additional documentation
   - manual page
-  - INSTALL
 - improve existing documentation
 
 Other ideas:
@@ -45,6 +44,8 @@ Other ideas:
 - verify/port to FreeBSD
 
 Done:
+
++ added INSTALL
 + added the menu to pre select an identity to the system tray icon
 + select local identity dialog: "local identity to reveal" is now editable
 + select local identity dialog: "remember my choice" implemented

@@ -1,0 +1,38 @@
+In order to build tlspool and tlspool-gui a lot of dependencies have to be met.
+At the moment the easiest way is to use NixOS packages, this will take care of 
+all the dependencies and is what is used during development.
+
+The source code in order to do so is in 3 different git repositories:
+https://github.com/amarsman/nixpkgs.git branch tlspool-gui
+https://github.com/amarsman/tlspool.git branch tlspool-gui
+https://github.com/amarsman/tlspool-gui.git
+
+The tlspool repository contains a script that will retrieve all other 
+repositories: QUICKSTART.sh
+
+In order for this to work you need to have git, curl and Nix installed on your
+Linux distribution. Currently Debian Jessie is used for development.
+
+See http://nixos.org/nix/manual/#chap-installation for instructions on how
+to download and install Nix. It's a one-line command that will create a /nix
+directory:
+
+$ bash <(curl https://nixos.org/nix/install)
+
+When Nix is installed do the following:
+
+$ git clone https://github.com/amarsman/tlspool.git
+$ cd tlspool
+$ git checkout tlspool-gui
+$ ./QUICKSTART.sh 
+
+This will build tlspool and tlspool-gui. As it needs qt5 the build can take 
+some time if you don’t have it already.
+
+When you start the tlspool-gui it will create a tlspool-gui.ini that you need
+to adapt if you don’t have the tlspool.conf file in it’s default location:
+
+$ cat tlspool-gui.ini 
+[tlspool]
+configFile=/etc/tlspool.conf
+

@@ -116,10 +116,17 @@ void SystemTrayItem::showLocalIdentityMenu()
     //       QRect geometry() const Q_DECL_OVERRIDE { return QRect(); }
     //       so it never contains a correct position :-(
     //       Need to find another way to find the icon position so the local identity menu can be
-    //       shown at the correct location
-    //    m_localIdentityMenu->exec(m_systemTrayIcon->geometry().center());
-    qDebug() << m_systemTrayIcon->geometry();
-    m_localIdentityMenu->exec(QPoint(1000, 600));
+    //       shown at the correct location.
+    //       In Windows the correct geometry is given back so use it if it's correct.
+
+    QPoint center = m_systemTrayIcon->geometry().center();
+
+    if (center.isNull()) {
+        center = QPoint(1000, 600);
+    }
+    qDebug() << "  SystemTrayIcon->geometry:" << m_systemTrayIcon->geometry();
+    qDebug() << "  Center:" << center;
+    m_localIdentityMenu->exec(center);
     qDebug() << "< SystemTrayItem::showLocalIdentityMenu()";
 }
 

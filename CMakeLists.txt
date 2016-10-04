@@ -69,3 +69,7 @@ add_custom_target(
 )
 add_dependencies(${APP_NAME} GenerateHeaderFile)
 
+set(CMAKE_INSTALL_PREFIX "")
+
+install(TARGETS ${APP_NAME}
+        RUNTIME DESTINATION bin)

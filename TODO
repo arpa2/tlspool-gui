@@ -3,7 +3,7 @@ about fixing bugs, others are (ideas or potential) features:
 
 Essential for a first version:
 - select local identity dialog: default focus should be on "local identity to reveal"
-- select local identity dialog: "remote pear to disclose to" should use maxlevels to show different possibilities
+- select local identity dialog: "remote peer to disclose to" should use maxlevels to show different possibilities
 - command line arguments
   - --help
   - --config : specifiy the location of tlspool-gui.ini

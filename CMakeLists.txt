@@ -5,6 +5,7 @@
 ## \license   SPDX-License-Identifier: GPL-2.0
 
 ## Require a minimum version of CMake
+message(FATAL_ERROR "This repository has moved to GitLab\n\nGet the project from\n\thttps://gitlab.com/arpa2/tlspool-gui/\n")
 cmake_minimum_required(VERSION 3.1.0)
 
 ## Application name
